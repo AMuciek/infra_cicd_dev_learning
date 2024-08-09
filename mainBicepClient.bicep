@@ -9,11 +9,12 @@ param deploymentTags object = {
 }
 
 // Azure OpenAI
-var azureOpenAIName = 'oai-${toLower(clientName)}-${environmentType}-002'
-var azureAISearchName = ''
-var azureStorageAccountName = 'sa${toLower(clientName)}${environmentType}001'
-var appServicePlanName = 'apps-${toLower(clientName)}-${environmentType}-001'
-var appServiceAppName = 'apps-${toLower(clientName)}-${environmentType}-001'
+var clientInResourceNames = substring(toLower(clientName), 0, 10)
+var azureOpenAIName = 'oai-${clientInResourceNames}-${environmentType}-002'
+var azureAISearchName = 'srch-${clientInResourceNames}-${environmentType}-002'
+var azureStorageAccountName = 'sa${clientInResourceNames}${environmentType}001'
+var appServicePlanName = 'apps-${clientInResourceNames}-${environmentType}-001'
+var appServiceAppName = 'apps-${clientInResourceNames}-${environmentType}-001'
 
 resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: azureOpenAIName
@@ -42,17 +43,17 @@ resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' =
 var modelConfigs = [
   {
     name: 'gpt-4'
-    capacity: 10
+    capacity: 2
     version: '0613'
   }
   {
     name: 'gpt-4o'
-    capacity: 48
+    capacity: 2
     version: '2024-05-13'
   }
   {
     name:  'text-embedding-ada-002'
-    capacity: 48
+    capacity: 2
     version: '2'
   }
 ]
