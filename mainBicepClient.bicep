@@ -1,20 +1,20 @@
 param location string = resourceGroup().location
 param azureOpenAILocation string = 'swedencentral'
-param clientName string = 'client'
+param clientName string = 'pilatus'
 param environmentType string = 'poc'
 
 param deploymentTags object = {
-  client:clientName
-  project: 'testProject'
+  environment: environmentType
+  project: 'chatbot'
 }
 
 // Azure OpenAI
-var clientInResourceNames = substring(toLower(clientName), 0, 10)
-var azureOpenAIName = 'oai-${clientInResourceNames}-${environmentType}-002'
-var azureAISearchName = 'srch-${clientInResourceNames}-${environmentType}-002'
+var clientInResourceNames = substring(toLower(clientName), 0, min(10, length(clientName)))
+var azureOpenAIName = 'oai-${clientInResourceNames}-${environmentType}-001'
+var azureAISearchName = 'srch-${clientInResourceNames}-${environmentType}-001'
 var azureStorageAccountName = 'sa${clientInResourceNames}${environmentType}001'
 var appServicePlanName = 'apps-${clientInResourceNames}-${environmentType}-001'
-var appServiceAppName = 'apps-${clientInResourceNames}-${environmentType}-001'
+var appServiceAppName = 'app-${clientInResourceNames}-${environmentType}-001'
 
 resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: azureOpenAIName
@@ -37,6 +37,7 @@ resource azureOpenAI 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' =
   }
   tags: deploymentTags
 }
+
 
 // OpenAI models
 
@@ -100,7 +101,7 @@ resource azureAISearch 'Microsoft.Search/searchServices@2023-11-01'= {
   name: azureAISearchName
   location: location
   sku:{
-    name: 'free'
+    name: 'basic'
   }
   tags:deploymentTags
 }
@@ -128,4 +129,6 @@ resource appServiceApp 'Microsoft.Web/sites@2022-03-01' = {
 }
 
 output appServiceAppHostName string = appServiceApp.properties.defaultHostName
+
+
 
